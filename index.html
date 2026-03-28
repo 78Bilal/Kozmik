@@ -1,0 +1,261 @@
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KOZMİK KOMUTA MERKEZİ | KAAN</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap');
+
+        /* GENEL TASARIM VE YEDEK ARKA PLAN */
+        body, html { 
+            margin: 0; padding: 0; 
+            background: #000; 
+            background: radial-gradient(circle, #1a0033 0%, #000000 100%);
+            color: #fff; 
+            font-family: 'Rajdhani', sans-serif; 
+            scroll-behavior: smooth; 
+            overflow-x: hidden; 
+        }
+        
+        /* 3D ARKA PLAN KATMANI */
+        #vanta-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: -1; }
+        
+        /* GİRİŞ EKRANI */
+        .hero { height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+        h1 { font-family: 'Orbitron', sans-serif; font-size: clamp(1.5rem, 6vw, 3.5rem); text-shadow: 0 0 25px #8a2be2; letter-spacing: 5px; text-transform: uppercase; margin: 0 20px; }
+        .hero p { font-size: 1.1rem; color: #d8bfff; letter-spacing: 4px; margin-top: 20px; opacity: 0.8; }
+        
+        .btn-scroll { margin-top: 50px; padding: 15px 40px; border: 2px solid #da70d6; background: transparent; color: #da70d6; text-decoration: none; font-weight: bold; transition: 0.4s; letter-spacing: 3px; cursor: pointer; border-radius: 5px; }
+        .btn-scroll:hover { background: #da70d6; color: #000; box-shadow: 0 0 40px #da70d6; transform: scale(1.05); }
+
+        /* KUTUCUKLAR BÖLÜMÜ */
+        .content-section { min-height: 100vh; padding: 100px 5%; display: flex; align-items: center; justify-content: center; }
+        .grid-container { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+            gap: 30px; 
+            max-width: 1300px; 
+            width: 100%;
+        }
+        
+        .visual-box { 
+            background: rgba(255, 255, 255, 0.03); 
+            backdrop-filter: blur(15px); 
+            padding: 30px; 
+            border: 1px solid rgba(138, 43, 226, 0.3); 
+            border-radius: 20px;
+            cursor: pointer; 
+            transition: 0.4s;
+            text-align: center;
+        }
+        .visual-box:hover { transform: translateY(-10px); border-color: #da70d6; box-shadow: 0 10px 40px rgba(138, 43, 226, 0.3); }
+        
+        .visual-img { border: 1px solid #4b0082; border-radius: 12px; overflow: hidden; height: 180px; margin-bottom: 20px; background: #000; }
+        .visual-img img { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; transition: 0.3s; }
+        .visual-box:hover .visual-img img { opacity: 1; transform: scale(1.05); }
+        
+        .visual-box h2 { font-family: 'Orbitron', sans-serif; color: #da70d6; font-size: 1.1rem; margin: 0; letter-spacing: 2px; }
+
+        /* MODAL (AÇILIR PENCERE) */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(5, 0, 15, 0.95); 
+            display: none; 
+            justify-content: center; 
+            align-items: center; 
+            z-index: 9999;
+            padding: 20px; 
+        }
+        .modal-content {
+            background: rgba(20, 5, 40, 0.9); 
+            border: 2px solid #da70d6; 
+            padding: 40px;
+            max-width: 700px; 
+            width: 95%; 
+            max-height: 85vh; 
+            overflow-y: auto; 
+            border-radius: 25px; 
+            box-shadow: 0 0 50px rgba(138, 43, 226, 0.5);
+            position: relative;
+        }
+        .modal-content::-webkit-scrollbar { width: 8px; }
+        .modal-content::-webkit-scrollbar-track { background: rgba(0,0,0,0.3); }
+        .modal-content::-webkit-scrollbar-thumb { background: #da70d6; border-radius: 10px; }
+
+        .close-btn { position: sticky; top: -20px; float: right; font-size: 2.5rem; color: #fff; cursor: pointer; z-index: 10; line-height: 1; opacity: 0.6; }
+        .close-btn:hover { opacity: 1; color: #da70d6; }
+
+        /* SORU TASARIMLARI (SABİTLENDİ) */
+        .quiz-q { text-align: left; margin-bottom: 30px; border-bottom: 1px solid rgba(218, 112, 214, 0.2); padding-bottom: 20px; }
+        .quiz-q p { color: #da70d6; font-family: 'Orbitron'; font-size: 0.95rem; margin-bottom: 15px; }
+        .options { display: grid; grid-template-columns: 1fr; gap: 10px; }
+        .opt-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(218, 112, 214, 0.3); color: #fff; padding: 12px; border-radius: 8px; cursor: pointer; text-align: left; font-family: 'Rajdhani'; transition: 0.2s; }
+        .opt-btn:hover { background: rgba(218, 112, 214, 0.2); }
+        .correct { background: #27ae60 !important; border: none; font-weight: bold; }
+        .wrong { background: #e74c3c !important; border: none; }
+
+        #submit-btn { background: #da70d6; color: #000; border: none; padding: 15px; font-family: 'Orbitron'; font-weight: bold; cursor: pointer; border-radius: 10px; width: 100%; margin-top: 10px; }
+        #result-text { margin-top: 20px; font-size: 1.5rem; color: #da70d6; font-family: 'Orbitron'; text-align: center; }
+
+        footer { text-align: center; padding: 40px; color: #333; font-size: 0.8rem; letter-spacing: 5px; }
+    </style>
+</head>
+<body>
+
+    <div id="vanta-canvas"></div>
+
+    <section class="hero">
+        <h1>KOZMİK VERİ ANALİZ MERKEZİ</h1>
+        <p>KAAN // v10.9 FINAL FIXED</p>
+        <a href="#kutular" class="btn-scroll">SİSTEME GİRİŞ YAP ↓</a>
+    </section>
+
+    <section id="kutular" class="content-section">
+        <div class="grid-container">
+            
+            <div class="visual-box" onclick="openPanel('BULGU ANALİZİ')">
+                <div class="visual-img"><img src="https://bilimgenc.tubitak.gov.tr/sites/default/files/styles/bp-770px-custom_user_desktop_1x/public/asteroid_kusaklari.jpg?itok=jO_ZZnsg" alt="Bulgu"></div>
+                <h2>BULGU ANALİZİ</h2>
+            </div>
+
+            <div class="visual-box" onclick="openPanel('GÖRSELLER')">
+                <div class="visual-img"><img src="https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=600&q=80" alt="Galaksi"></div>
+                <h2>GÖRSELLER VE VİDEOLAR</h2>
+            </div>
+
+            <div class="visual-box" onclick="openPanel('FREKANS ANALİZİ')">
+                <div class="visual-img"><img src="https://www.sercansolmaz.com/content/images/size/w2000/2024/09/equalizer.png" alt="Frekans"></div>
+                <h2>FREKANS ANALİZİ</h2>
+            </div>
+
+            <div class="visual-box" onclick="openQuizPanel()">
+                <div class="visual-img"><img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=600&q=80" alt="Test"></div>
+                <h2>SORU CEVAP</h2>
+            </div>
+        </div>
+    </section>
+
+    <div id="morPanel" class="modal-overlay">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closePanel()">&times;</span>
+            <div id="panel-standard">
+                <h2 id="modalTitle" style="color:#da70d6; font-family:Orbitron; letter-spacing:3px;">PANEL</h2>
+                <hr style="border:0.5px solid rgba(218, 112, 214, 0.2); margin: 20px 0;">
+                <p>Veri işleme modülü aktif. Yetki onaylandı.</p>
+                <div style="border:1px dashed #da70d6; padding:20px; border-radius:10px; color:#da70d6; margin-top:20px; font-size:0.9rem;">
+                    [ ERİŞİM KISITLI // VERİ BEKLENİYOR ]
+                </div>
+            </div>
+            <div id="panel-quiz" style="display: none;">
+                <h2 style="font-family:Orbitron; color:#da70d6;">BİLGİ TESTİ</h2>
+                <div id="quiz-body"></div>
+                <button id="submit-btn" onclick="checkAnswers()">SONUÇLARI HESAPLA</button>
+                <div id="result-text"></div>
+            </div>
+        </div>
+    </div>
+
+    <footer>KAAN // 2026</footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
+    
+    
+    
+
+    <script>
+        // Arka Planı Başlat
+        try {
+            VANTA.NET({
+                el: "#vanta-canvas",
+                mouseControls: true,
+                touchControls: true,
+                color: 0x8a2be2,
+                backgroundColor: 0x0,
+                points: 16.00,
+                maxDistance: 21.00,
+                spacing: 17.00
+            });
+        } catch(e) {}
+
+        // Senin Sabitlediğin Sorular
+        const quizData = [
+            { q: "Kozmik gürültü filtreleme algoritmasının ana bileşeni nedir?", options: ["Fourier Dönüşümü", "Işık Hızı", "Mercek Temizliği", "Yakıt Tankı"], correct: 0 },
+            { q: "Uzaydan gelen ham veriler hangi formatta saklanır?", options: ["FITS", "JPEG", "MP3", "EXE"], correct: 0 },
+            { q: "Desibel (dB) birimi neyi ölçer?", options: ["Sinyal Şiddeti", "Işık Yılı", "Piksel Sayısı", "Renk Derinliği"], correct: 0 },
+            { q: "Atmosferik bozulmayı önleyen teknoloji hangisidir?", options: ["Adaptif Optik", "Dijital Zoom", "Bluetooth", "Lazer Yazıcı"], correct: 1 }, 
+            { q: "Sinyal/Gürültü oranı (SNR) yüksekse ne olur?", options: ["Veri daha nettir", "Veri bozuktur", "İnternet kopar", "Bilgisayar ısınır"], correct: 0 }
+        ];
+
+        let userAnswers = Array(quizData.length).fill(null);
+
+        function openPanel(title) {
+            document.getElementById('panel-standard').style.display = 'block';
+            document.getElementById('panel-quiz').style.display = 'none';
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('morPanel').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function openQuizPanel() {
+            document.getElementById('panel-standard').style.display = 'none';
+            document.getElementById('panel-quiz').style.display = 'block';
+            loadQuiz();
+            document.getElementById('morPanel').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function loadQuiz() {
+            const quizBody = document.getElementById('quiz-body');
+            quizBody.innerHTML = "";
+            quizData.forEach((data, index) => {
+                const qDiv = document.createElement('div');
+                qDiv.className = 'quiz-q';
+                qDiv.innerHTML = `<p>${index + 1}. ${data.q}</p>
+                    <div class="options" id="q${index}">
+                        ${data.options.map((opt, i) => `<button class="opt-btn" onclick="selectOpt(${index}, ${i})">${opt}</button>`).join('')}
+                    </div>`;
+                quizBody.appendChild(qDiv);
+            });
+            document.getElementById('result-text').innerText = "";
+        }
+
+        function selectOpt(qIdx, optIdx) {
+            userAnswers[qIdx] = optIdx;
+            const buttons = document.getElementById(`q${qIdx}`).querySelectorAll('.opt-btn');
+            buttons.forEach((btn, i) => {
+                btn.style.background = (i === optIdx) ? 'rgba(218, 112, 214, 0.4)' : 'rgba(255,255,255,0.05)';
+            });
+        }
+
+        function checkAnswers() {
+            let score = 0;
+            quizData.forEach((data, i) => {
+                const buttons = document.getElementById(`q${i}`).querySelectorAll('.opt-btn');
+                if (userAnswers[i] === data.correct) {
+                    score++;
+                    if(userAnswers[i] !== null) buttons[userAnswers[i]].classList.add('correct');
+                } else {
+                    if(userAnswers[i] !== null) buttons[userAnswers[i]].classList.add('wrong');
+                    buttons[data.correct].classList.add('correct');
+                }
+            });
+            document.getElementById('result-text').innerText = `SONUÇ: ${score} / ${quizData.length}`;
+            document.querySelector('.modal-content').scrollTo({ top: 1000, behavior: 'smooth' });
+        }
+
+        function closePanel() { 
+            document.getElementById('morPanel').style.display = 'none'; 
+            document.body.style.overflow = 'auto';
+        }
+        window.onclick = function(event) { if (event.target == document.getElementById('morPanel')) closePanel(); }
+    </script>
+    
+    <script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js"></script>
+    <script src="https://files.bpcontent.cloud/2026/03/28/17/20260328173341-N764K49W.js" defer></script>
+    
+
+</body>
+</html>
