@@ -143,9 +143,25 @@
             <div id="panel-standard">
                 <h2 id="modalTitle" style="color:#da70d6; font-family:Orbitron; letter-spacing:3px;">PANEL</h2>
                 <hr style="border:0.5px solid rgba(218, 112, 214, 0.2); margin: 20px 0;">
-                <p>Veri işleme modülü aktif. Yetki onaylandı.</p>
-                <div style="border:1px dashed #da70d6; padding:20px; border-radius:10px; color:#da70d6; margin-top:20px; font-size:0.9rem;">
-                    [ ERİŞİM KISITLI // VERİ BEKLENİYOR ]
+                
+                <div id="analiz-icerik" style="display: none;">
+                    <div id="analiz-merkezi" style="width: 100%; text-align: center;">
+                        <h3 style="color: #da70d6; font-family: Orbitron; font-size: 1rem;">🛰️ TUA KAAN CANLI ANALİZ İSTASYONU</h3>
+                        <iframe
+                            src="http://127.0.0.1:7860" 
+                            frameborder="0"
+                            width="100%"
+                            height="650px"
+                            style="border-radius: 15px; border: 2px solid #da70d6; box-shadow: 0 0 20px rgba(218, 112, 214, 0.3);"
+                        ></iframe>
+                    </div>
+                </div>
+            
+                <div id="varsayilan-icerik">
+                    <p>Veri işleme modülü aktif. Yetki onaylandı.</p>
+                    <div style="border:1px dashed #da70d6; padding:20px; border-radius:10px; color:#da70d6; margin-top:20px; font-size:0.9rem;">
+                        [ ERİŞİM KISITLI // VERİ BEKLENİYOR ]
+                    </div>
                 </div>
             </div>
             <div id="panel-quiz" style="display: none;">
@@ -195,6 +211,16 @@
             document.getElementById('panel-standard').style.display = 'block';
             document.getElementById('panel-quiz').style.display = 'none';
             document.getElementById('modalTitle').innerText = title;
+        
+            // Eğer tıklanan kutu Frekans Analizi ise Iframe'i göster, değilse normal yazıyı göster
+            if (title === 'FREKANS ANALİZİ') {
+                document.getElementById('analiz-icerik').style.display = 'block';
+                document.getElementById('varsayilan-icerik').style.display = 'none';
+            } else {
+                document.getElementById('analiz-icerik').style.display = 'none';
+                document.getElementById('varsayilan-icerik').style.display = 'block';
+            }
+        
             document.getElementById('morPanel').style.display = 'flex';
             document.body.style.overflow = 'hidden';
         }
