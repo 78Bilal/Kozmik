@@ -89,7 +89,7 @@ def kozmik_analiz():
  Analiz Tarihi         : {datetime.now().strftime('%d/%m/%Y')}
  Analiz Saati          : {datetime.now().strftime('%H:%M:%S')}
  İstasyon Konumu       : Karabük / Türkiye (Ana Kontrol Merkezi)
- Veri Kaynağı          : KAAN-v10.9 Sinyal Yakalama Modülü
+ Veri Kaynağı          : SERTİFİKALI-ÇELİKÇİLER | v10.9 Sinyal Yakalama Modülü
  
  [TEKNİK PARAMETRELER]
  -------------------------------------------------------------------------------
@@ -120,13 +120,13 @@ theme = gr.themes.Monochrome(
     font=[gr.themes.GoogleFont("JetBrains Mono"), "ui-monospace", "monospace"]
 )
 
-with gr.Blocks(theme=theme, title="TUA KAAN Sinyal Analiz v10.9") as demo:
+with gr.Blocks(theme=theme, title="TUA SERTİFİKALI-ÇELİKÇİLER Sinyal Analiz v10.9") as demo:
     
     # Başlık ve Logo Bölümü
     with gr.Row():
         gr.Markdown(
             """
-            # 🛰️ TÜRK UZAY AJANSI (TUA) - KAAN v10.9
+            # 🛰️ TÜRK UZAY AJANSI (TUA) - SERTİFİKALI-ÇELİKÇİLER v10.9
             ## Kozmik Sinyal Analiz ve Anomali Tespit Arayüzü
             *Karabük Merkez İstasyonu Veri İşleme Birimi*
             """
@@ -163,7 +163,7 @@ with gr.Blocks(theme=theme, title="TUA KAAN Sinyal Analiz v10.9") as demo:
     gr.Markdown("---")
     gr.Markdown(
         """
-        *TUA KAAN v10.9 Sinyal Analiz Sistemi* | Tüm Hakları Saklıdır © 2026
+        *TUA SERTİFİKALI-ÇELİKÇİLER v10.9 Sinyal Analiz Sistemi* | Tüm Hakları Saklıdır © 2026
         """
         )
 
