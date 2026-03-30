@@ -16,7 +16,7 @@ timeout /t 5 /nobreak > nul
 
 :: 2. Ngrok Token Tanimi
 echo [2/3] Ngrok Kimlik Dogrulamasi Yapiliyor...
-ngrok config add-authtoken 3Babkb7mybNq4GwNtOEnbWvPid3_5EaYrrhwLQLQp3JFYQsm8
+ngrok config add-authtoken NGROK APİ KEY İNİZİ YAZINIZ
 
 echo.
 echo [3/3] Tunel Baglantisi Kuruluyor (Port 7860)...
